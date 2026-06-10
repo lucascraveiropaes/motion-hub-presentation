@@ -1,0 +1,29 @@
+---
+title: Seller Approval & Monitoring
+---
+flowchart LR
+  A([Seller applies<br/>PENDING]):::start
+  C{"KYC verification<br/>100% required"}:::decision
+  D{"Manual admin<br/>approval"}:::decision
+  E([ACTIVE]):::done
+  F["Auto-calculate metrics<br/>rating · reviews ·<br/>response time &amp; rate"]:::ai
+  G{"Quality below<br/>threshold?<br/>defects · delays · disputes"}:::decision
+  H([Auto-SUSPENDED]):::reject
+  X([Rejected]):::reject
+
+  A --> C
+  C -- Fail --> X
+  C -- Pass --> D
+  D -- Reject --> X
+  D -- Approve --> E
+  E --> F
+  F --> G
+  G -- "No · stays active" --> E
+  G -- Yes --> H
+
+  classDef start fill:#f61a01,stroke:#f61a01,stroke-width:2px,color:#ffffff
+  classDef ai fill:#2a1008,stroke:#f61a01,stroke-width:2.5px,color:#ffffff
+  classDef step fill:#20232b,stroke:#3a3f4b,stroke-width:1.5px,color:#ffffff
+  classDef decision fill:#241015,stroke:#ff4d3a,stroke-width:2px,color:#ffffff
+  classDef done fill:#10301f,stroke:#1f9d63,stroke-width:2px,color:#ffffff
+  classDef reject fill:#2a0d0d,stroke:#d03a3a,stroke-width:2px,color:#ffffff

@@ -1,0 +1,33 @@
+---
+title: Federated Search Architecture
+---
+flowchart LR
+  Q([Search query]):::start
+  EXP["AI query<br/>expansion"]:::ai
+
+  subgraph PAR["Parallel · async"]
+    direction TB
+    MA["Motion<br/>ProductMatcher API"]:::step
+    ME["Marketplace<br/>Elasticsearch"]:::step
+  end
+
+  MG["Merge<br/>Motion-first ·<br/>fill gaps w/ marketplace"]:::step
+  RR["AI rerank"]:::ai
+  RES(["95 results · ~100ms<br/>87 Motion + 8 Marketplace"]):::done
+  CACHE[("Redis autocomplete +<br/>Elasticsearch results cache")]:::cache
+
+  Q --> EXP
+  EXP --> MA
+  EXP --> ME
+  MA --> MG
+  ME --> MG
+  MG --> RR
+  RR --> RES
+  CACHE -. cache .-> EXP
+  CACHE -. cache .-> RES
+
+  classDef start fill:#f61a01,stroke:#f61a01,stroke-width:2px,color:#ffffff
+  classDef ai fill:#2a1008,stroke:#f61a01,stroke-width:2.5px,color:#ffffff
+  classDef step fill:#20232b,stroke:#3a3f4b,stroke-width:1.5px,color:#ffffff
+  classDef done fill:#10301f,stroke:#1f9d63,stroke-width:2px,color:#ffffff
+  classDef cache fill:#0f2230,stroke:#3aa0d0,stroke-width:2px,color:#ffffff

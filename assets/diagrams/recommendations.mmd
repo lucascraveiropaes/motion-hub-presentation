@@ -1,0 +1,34 @@
+---
+title: AI Product Recommendations
+---
+flowchart TD
+  P([Source product]):::start
+
+  subgraph SIM["Similar products"]
+    direction TB
+    S1["Match category +<br/>manufacturer +<br/>price ±30% + tags"]:::step
+    S2["Score 0.6–0.7<br/>SAME_CATEGORY ·<br/>SAME_MANUFACTURER"]:::step
+    S1 --> S2
+  end
+
+  subgraph COMP["Complementary products"]
+    direction TB
+    C1["gpt-5.4 maps<br/>compatible categories"]:::ai
+    C2["pump → seals · hoses ·<br/>lubricants · filters"]:::step
+    C3["AI relevance score<br/>up to 1.0"]:::step
+    C1 --> C2 --> C3
+  end
+
+  M["Merge &amp; rank"]:::ai
+  R([3 + 3 suggestions]):::done
+
+  P --> S1
+  P --> C1
+  S2 --> M
+  C3 --> M
+  M --> R
+
+  classDef start fill:#f61a01,stroke:#f61a01,stroke-width:2px,color:#ffffff
+  classDef ai fill:#2a1008,stroke:#f61a01,stroke-width:2.5px,color:#ffffff
+  classDef step fill:#20232b,stroke:#3a3f4b,stroke-width:1.5px,color:#ffffff
+  classDef done fill:#10301f,stroke:#1f9d63,stroke-width:2px,color:#ffffff

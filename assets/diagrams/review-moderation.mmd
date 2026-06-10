@@ -1,0 +1,28 @@
+---
+title: AI Review Moderation
+---
+flowchart TD
+  A([Customer submits review]):::start
+  B{"In SHA-256 blacklist?<br/>(90-day TTL)"}:::decision
+  C["Azure OpenAI<br/>gpt-5.4-mini moderation"]:::ai
+  D{"Structured JSON<br/>approved · confidence 0–1"}:::decision
+  E([Auto-approved · &lt;2s · 95%+]):::done
+  F["Manual review queue<br/>(edge cases only)"]:::warn
+  G["Rejected · hash cached<br/>profanity · spam · fake · PII · threats"]:::reject
+
+  A --> B
+  B -- "Yes · known bad" --> G
+  B -- No --> C
+  C --> D
+  D -- Approved --> E
+  D -- Needs review --> F
+  D -- Rejected --> G
+  F -. contest .-> D
+
+  classDef start fill:#f61a01,stroke:#f61a01,stroke-width:2px,color:#ffffff
+  classDef ai fill:#2a1008,stroke:#f61a01,stroke-width:2.5px,color:#ffffff
+  classDef step fill:#20232b,stroke:#3a3f4b,stroke-width:1.5px,color:#ffffff
+  classDef decision fill:#241015,stroke:#ff4d3a,stroke-width:2px,color:#ffffff
+  classDef done fill:#10301f,stroke:#1f9d63,stroke-width:2px,color:#ffffff
+  classDef warn fill:#33270c,stroke:#e0a020,stroke-width:2px,color:#ffffff
+  classDef reject fill:#2a0d0d,stroke:#d03a3a,stroke-width:2px,color:#ffffff

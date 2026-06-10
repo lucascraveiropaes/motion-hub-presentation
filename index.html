@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotionHub Marketplace — AI-Powered Industrial Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --motion-red: #f61a01;
+  --motion-red-soft: #ff4d3a;
+  --motion-red-dark: #c41501;
+
+  --scale: 1;
+  --header-height: 4rem;
+  --nav-height: 4rem;
+}
+
+@media (min-width: 1440px) { :root { --scale: 1.15; } }
+@media (min-width: 1920px) { :root { --scale: 1.3; } }
+@media (min-width: 2560px) { :root { --scale: 1.6; } }
+
+[data-theme="dark"] {
+  --bg: #0d0d0d;
+  --bg2: #141414;
+  --bg3: #1c1c1c;
+  --bg4: #242424;
+  --fg: #ffffff;
+  --fg2: #a8a8a8;
+  --fg3: #555555;
+  --red-dim: rgba(246, 26, 1, 0.12);
+  --red-glow: rgba(246, 26, 1, 0.15);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-red: rgba(246, 26, 1, 0.35);
+  --glass-bg: rgba(20, 20, 20, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg2: #f8fafc;
+  --bg3: #f1f5f9;
+  --bg4: #e2e8f0;
+  --fg: #0f172a;
+  --fg2: #475569;
+  --fg3: #94a3b8;
+  --red-dim: rgba(246, 26, 1, 0.08);
+  --red-glow: rgba(246, 26, 1, 0.12);
+  --border: rgba(15, 23, 42, 0.1);
+  --border-medium: rgba(15, 23, 42, 0.15);
+  --border-red: rgba(246, 26, 1, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(15, 23, 42, 0.1);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  transition: background-color 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Progress & Chrome */
+#progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: calc(3px * var(--scale));
+  background: var(--motion-red); z-index: 500;
+  box-shadow: 0 0 calc(15px * var(--scale)) var(--red-glow);
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: calc(var(--header-height) * var(--scale));
+  z-index: 400;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 calc(2rem * var(--scale));
+  border-bottom: calc(1px * var(--scale)) solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+}
+
+.logo-area {
+  display: flex; align-items: center;
+  gap: calc(0.8rem * var(--scale));
+  min-width: calc(180px * var(--scale));
+}
+
+.logo-area img {
+  width: calc(40px * var(--scale));
+  height: calc(40px * var(--scale));
+  object-fit: contain;
+}
+
+.logo-text {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: calc(1.1rem * var(--scale));
+  letter-spacing: -0.005em;
+  color: var(--fg);
+}
+
+.slide-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: calc(0.75rem * var(--scale));
+  letter-spacing: 0.05em;
+  color: var(--fg3);
+  text-transform: uppercase;
+  flex: 1;
+  text-align: center;
+}
+
+.theme-toggle-area {
+  min-width: calc(180px * var(--scale));
+  display: flex;
+  justify-content: flex-end;
+}
+
+#theme-toggle {
+  background: var(--bg3);
+  border: calc(1px * var(--scale)) solid var(--border);
+  border-radius: calc(6px * var(--scale));
+  width: calc(2.5rem * var(--scale));
+  height: calc(2.5rem * var(--scale));
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--fg2);
+  transition: all 0.3s;
+}
+
+#theme-toggle:hover {
+  background: var(--bg4);
+  border-color: var(--border-red);
+  color: var(--motion-red);
+}
+
+#theme-toggle svg {
+  width: calc(18px * var(--scale));
+  height: calc(18px * var(--scale));
+}
+
+#nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(var(--nav-height) * var(--scale));
+  z-index: 400;
+  display: flex; align-items: center; justify-content: center;
+  gap: calc(1.2rem * var(--scale));
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-top: calc(1px * var(--scale)) solid var(--border);
+}
+
+.nav-btn {
+  background: var(--bg3);
+  border: calc(1px * var(--scale)) solid var(--border);
+  color: var(--fg2);
+  border-radius: calc(6px * var(--scale));
+  width: calc(2.5rem * var(--scale));
+  height: calc(2.5rem * var(--scale));
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: calc(1.2rem * var(--scale));
+}
+
+.nav-btn:hover {
+  background: var(--bg4);
+  border-color: var(--border-red);
+  color: var(--motion-red);
+}
+
+.nav-dot {
+  width: calc(8px * var(--scale));
+  height: calc(8px * var(--scale));
+  border-radius: 50%;
+  background: var(--fg3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-dot.active {
+  background: var(--motion-red);
+  box-shadow: 0 0 calc(10px * var(--scale)) var(--red-glow);
+  transform: scale(1.3);
+}
+
+.nav-dot:hover {
+  background: var(--motion-red-soft);
+}
+
+#nav-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: calc(0.85rem * var(--scale));
+  color: var(--fg3);
+  min-width: calc(3.5rem * var(--scale));
+  text-align: center;
+}
+
+/* Deck */
+#deck {
+  position: fixed;
+  top: calc(var(--header-height) * var(--scale));
+  left: 0; right: 0;
+  bottom: calc(var(--nav-height) * var(--scale));
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.slide.active { opacity: 1; pointer-events: all; }
+
+/* Slide Components */
+.slide-header {
+  flex-shrink: 0;
+  padding: calc(2rem * var(--scale)) calc(3rem * var(--scale)) calc(1.5rem * var(--scale));
+  position: relative;
+}
+
+.slide-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: calc(3rem * var(--scale));
+  width: calc(4rem * var(--scale));
+  height: calc(3px * var(--scale));
+  background: var(--motion-red);
+  box-shadow: 0 0 calc(15px * var(--scale)) var(--red-glow);
+}
+
+.h-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: calc(0.75rem * var(--scale));
+  letter-spacing: 0.08em;
+  color: var(--motion-red);
+  text-transform: uppercase;
+  margin-bottom: calc(0.6rem * var(--scale));
+  font-weight: 500;
+}
+
+.slide-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: calc(2.5rem * var(--scale));
+  letter-spacing: -0.01em;
+  color: var(--fg);
+  line-height: 1.15;
+}
+
+.slide-body {
+  flex: 1;
+  padding: calc(2rem * var(--scale)) calc(3rem * var(--scale));
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+
+/* Utility Classes */
+.slide.header-left .slide-body {
+  padding: calc(2rem * var(--scale)) calc(3rem * var(--scale));
+  overflow-y: auto;
+}
+
+.slide.header-left .slide-header {
+  padding: 0 0 calc(1.5rem * var(--scale)) 0;
+  border-bottom: none;
+}
+
+.slide.header-left .slide-header::after {
+  left: 0;
+  bottom: 0;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(3rem * var(--scale));
+  height: 100%;
+  align-items: start;
+}
+
+.two-col > div {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.5rem * var(--scale));
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(200px * var(--scale)), 1fr));
+  gap: calc(1rem * var(--scale));
+}
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg2);
+  border: calc(1px * var(--scale)) solid var(--border);
+  border-radius: calc(12px * var(--scale));
+  padding: calc(1.5rem * var(--scale));
+  transition: all 0.3s;
+}
+
+.kpi-card:hover {
+  border-color: var(--border-red);
+  transform: translateY(calc(-4px * var(--scale)));
+  box-shadow: 0 calc(15px * var(--scale)) calc(40px * var(--scale)) rgba(0, 0, 0, 0.15);
+}
+
+.kpi-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: calc(2.5rem * var(--scale));
+  color: var(--motion-red);
+  line-height: 1.1;
+  margin-bottom: calc(0.5rem * var(--scale));
+  letter-spacing: -0.01em;
+}
+
+.kpi-label {
+  font-family: 'Inter', sans-serif;
+  font-size: calc(0.95rem * var(--scale));
+  color: var(--fg2);
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.bull-list {
+  list-style: none;
+  display: flex; flex-direction: column;
+  gap: calc(1.5rem * var(--scale));
+}
+
+.bull-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.5rem * var(--scale));
+}
+
+.bull-list li {
+  display: flex;
+  align-items: start;
+  gap: calc(0.8rem * var(--scale));
+  font-size: calc(1.05rem * var(--scale));
+  color: var(--fg2);
+  line-height: 1.6;
+}
+
+.bull-list li::before {
+  content: '▸';
+  color: var(--motion-red);
+  font-size: calc(1rem * var(--scale));
+  margin-top: calc(0.15rem * var(--scale));
+  flex-shrink: 0;
+}
+
+.bull-list li > div {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.4rem * var(--scale));
+  flex: 1;
+}
+
+.bull-list li .item-title {
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: calc(1.08rem * var(--scale));
+  line-height: 1.3;
+}
+
+.bull-list li .item-text {
+  color: var(--fg2);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: calc(1rem * var(--scale));
+  line-height: 1.6;
+}
+
+.screenshot-placeholder {
+  background: var(--bg3);
+  border: calc(2px * var(--scale)) dashed var(--border);
+  border-radius: calc(12px * var(--scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: calc(1rem * var(--scale));
+  min-height: calc(300px * var(--scale));
+  transition: all 0.3s;
+}
+
+.screenshot-placeholder:hover {
+  border-color: var(--border-red);
+  background: var(--bg4);
+}
+
+.screenshot-placeholder svg {
+  width: calc(48px * var(--scale));
+  height: calc(48px * var(--scale));
+  color: var(--fg3);
+}
+
+.screenshot-placeholder span {
+  font-family: 'Inter', sans-serif;
+  font-size: calc(0.9rem * var(--scale));
+  color: var(--fg3);
+  font-weight: 500;
+}
+
+.diagram-card {
+  flex: 1;
+  background: #141414;
+  border: calc(1px * var(--scale)) solid var(--border-medium);
+  border-radius: calc(12px * var(--scale));
+  padding: calc(1.25rem * var(--scale));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(280px * var(--scale));
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.diagram-card:hover {
+  border-color: var(--border-red);
+}
+
+.diagram-card img {
+  width: 100%;
+  height: 100%;
+  max-height: calc(62vh);
+  object-fit: contain;
+  display: block;
+}
+
+.impact-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: clamp(calc(4rem * var(--scale)), 10vw, calc(8rem * var(--scale)));
+  line-height: 1;
+  color: var(--motion-red);
+  text-shadow: 0 0 calc(50px * var(--scale)) var(--red-glow);
+  margin-bottom: calc(1rem * var(--scale));
+  letter-spacing: -0.02em;
+}
+
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: calc(0.75rem * var(--scale));
+  padding: calc(0.4rem * var(--scale)) calc(0.8rem * var(--scale));
+  background: var(--red-dim);
+  color: var(--motion-red);
+  border: calc(1px * var(--scale)) solid var(--border-red);
+  border-radius: calc(6px * var(--scale));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(calc(20px * var(--scale))); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide.active .anim-up {
+  animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.slide.active .anim-up:nth-child(1) { animation-delay: 0.1s; }
+.slide.active .anim-up:nth-child(2) { animation-delay: 0.2s; }
+.slide.active .anim-up:nth-child(3) { animation-delay: 0.3s; }
+.slide.active .anim-up:nth-child(4) { animation-delay: 0.4s; }
+.slide.active .anim-up:nth-child(5) { animation-delay: 0.5s; }
+
+::-webkit-scrollbar { width: calc(8px * var(--scale)); }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--fg3); border-radius: calc(4px * var(--scale)); }
+::-webkit-scrollbar-thumb:hover { background: var(--fg2); }
+
+/* QR Code Persistent */
+.qr-persistent {
+  position: fixed;
+  bottom: calc(var(--nav-height) * var(--scale) + 2rem);
+  right: calc(2rem * var(--scale));
+  width: calc(100px * var(--scale));
+  height: calc(100px * var(--scale));
+  background: var(--bg3);
+  border: calc(2px * var(--scale)) solid var(--border);
+  border-radius: calc(8px * var(--scale));
+  padding: calc(0.5rem * var(--scale));
+  z-index: 300;
+  transition: all 0.3s;
+}
+
+.qr-persistent:hover {
+  transform: scale(1.1);
+  border-color: var(--border-red);
+}
+
+.qr-persistent img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Team Avatars */
+.team-avatars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: calc(2rem * var(--scale));
+  margin-bottom: calc(2rem * var(--scale));
+  max-width: calc(800px * var(--scale));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.avatar-circle {
+  width: calc(120px * var(--scale));
+  height: calc(120px * var(--scale));
+  border-radius: 50%;
+  background: var(--bg3);
+  border: calc(3px * var(--scale)) solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.3s;
+  margin: 0 auto;
+}
+
+.avatar-circle:hover {
+  border-color: var(--motion-red);
+  transform: scale(1.05);
+}
+
+.avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-circle svg {
+  width: calc(50px * var(--scale));
+  height: calc(50px * var(--scale));
+  color: var(--fg3);
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(0.8rem * var(--scale));
+}
+
+.team-member-name {
+  font-family: 'Inter', sans-serif;
+  font-size: calc(0.95rem * var(--scale));
+  font-weight: 600;
+  color: var(--fg);
+  text-align: center;
+}
+
+.team-photo-placeholder {
+  width: 100%;
+  max-width: calc(800px * var(--scale));
+  height: calc(300px * var(--scale));
+  margin: calc(2rem * var(--scale)) auto 0;
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="header">
+  <div class="logo-area">
+    <img src="assets/icon.png" alt="Motion" onerror="this.src='assets/logo-text-white.png'">
+    <span class="logo-text">MotionHub</span>
+  </div>
+  <span class="slide-label" id="slide-label">Project Announcement</span>
+  <div class="theme-toggle-area">
+    <button id="theme-toggle" title="Toggle theme">
+      <i data-lucide="sun"></i>
+    </button>
+  </div>
+</div>
+
+<div id="deck">
+
+  <!-- SLIDE 1: PROJECT ANNOUNCEMENT -->
+  <div class="slide active" id="s1">
+    <div class="slide-body" style="align-items:center; justify-content:center; text-align:center;">
+      <h1 class="anim-up" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(calc(3.5rem * var(--scale)), 8vw, calc(7rem * var(--scale))); line-height:1; letter-spacing:-0.02em; margin-bottom:calc(1.5rem * var(--scale)); color:var(--motion-red);">
+        MotionHub Marketplace
+      </h1>
+      <p class="anim-up" style="font-family:'Inter',sans-serif; font-size:calc(1.6rem * var(--scale)); color:var(--fg2); line-height:1.5; max-width:40ch; margin-bottom:calc(3rem * var(--scale)); font-weight:500;">
+        AI-Powered Industrial Parts Platform
+      </p>
+      <div class="kpi-grid anim-up" style="max-width:900px; margin:0 auto;">
+        <div class="kpi-card">
+          <div class="kpi-value">95</div>
+          <div class="kpi-label">Products in &lt;100ms<br><small style="opacity:0.7;">(87 Motion + 8 Marketplace)</small></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">gpt-5.4</div>
+          <div class="kpi-label">AI-Powered Suggestions<br><small style="opacity:0.7;">(Tested )</small></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">v1.0.0</div>
+          <div class="kpi-label">100% Uptime<br><small style="opacity:0.7;">(Health Check )</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: TEAM ALPACA -->
+  <div class="slide" id="s2">
+    <div class="slide-body" style="align-items:center; justify-content:center; text-align:center;">
+      <div class="slide-header" style="text-align:center;border-bottom:none;padding:calc(1rem * var(--scale)) 0;margin: calc(12rem * var(--scale)) 0 calc(2.5rem * var(--scale));">
+        <div class="h-label">Hackathon 2026</div>
+        <h2>Meet the Team</h2>
+      </div>
+      <div class="team-avatars anim-up">
+        <div class="team-member">
+          <div class="avatar-circle">
+            <img src="assets/team/lucas.jpg" alt="Lucas Paes" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <i data-lucide="user" style="display:none;"></i>
+          </div>
+          <div class="team-member-name">Lucas Paes</div>
+        </div>
+        <div class="team-member">
+          <div class="avatar-circle">
+            <img src="assets/team/danilo.jpeg" alt="Danilo Salve" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <i data-lucide="user" style="display:none;"></i>
+          </div>
+          <div class="team-member-name">Danilo Salve</div>
+        </div>
+        <div class="team-member">
+          <div class="avatar-circle">
+            <img src="assets/team/renato.jpeg" alt="Renato Silva" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <i data-lucide="user" style="display:none;"></i>
+          </div>
+          <div class="team-member-name">Renato Silva</div>
+        </div>
+        <div class="team-member">
+          <div class="avatar-circle">
+            <img src="assets/team/ricardo.png" alt="Ricardo Gumiero" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <i data-lucide="user" style="display:none;"></i>
+          </div>
+          <div class="team-member-name">Ricardo Gumiero</div>
+        </div>
+      </div>
+      <div class="screenshot-placeholder team-photo-placeholder anim-up">
+        <img src="assets/team/warroom.jpeg" alt="Team Alpaca — War Room" style="width:100%; height:100%; object-fit:cover; border-radius:calc(12px * var(--scale));" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.nextElementSibling.nextElementSibling.style.display='block';">
+        <i data-lucide="users" style="display:none;"></i>
+        <span style="display:none;">Team Photo — War Room Collaboration</span>
+      </div>
+      <div style="position:absolute; bottom:calc(1rem * var(--scale)); left:calc(1rem * var(--scale)); opacity:0.3; font-size:calc(0.75rem * var(--scale));">
+        🦙 Team Alpaca
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: QR CODE + THE PROBLEM -->
+  <div class="slide header-left" id="s3">
+    <div class="slide-body">
+      <div class="two-col">
+        <div>
+          <div class="slide-header">
+            <div class="h-label">Strategic Value</div>
+            <h2>Strategic Growth & Acquisition Engine</h2>
+          </div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">Accelerate M&A Integration</p><p class="item-text">Motion can continue its aggressive acquisition strategy, onboarding companies as marketplace sellers from Day 1.</p></div></li>
+            <li class="anim-up"><div><p class="item-title">White-Label Marketplace APIs</p><p class="item-text">Acquired brands can power their own storefronts using our APIs, offering the full marketplace catalog under their own identity.</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Infinite Shelf, Local Brand</p><p class="item-text">Keep the specialized local expertise of acquisitions while providing them with the scale and variety of the entire Motion ecosystem.</p></div></li>
+          </ul>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <div class="anim-up" style="width:calc(300px * var(--scale)); height:calc(330px * var(--scale)); background:var(--bg3); border:calc(2px * var(--scale)) solid var(--border); border-radius:calc(12px * var(--scale)); padding:calc(1rem * var(--scale)); display:flex; flex-direction:column; align-items:center; justify-content:center; margin-bottom:calc(1.5rem * var(--scale));">
+            <img src="assets/qrcode.png" alt="QR Code" style="width:calc(250px * var(--scale)); height:calc(250px * var(--scale)); object-fit:contain; border-radius: 4px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <i data-lucide="qr-code" style="display:none; width:calc(200px * var(--scale)); height:calc(200px * var(--scale)); color:var(--fg3);"></i>
+            <p style="margin-top:calc(1rem * var(--scale)); font-size:calc(0.9rem * var(--scale)); color:var(--fg2); text-align:center;">
+              Scan to try the live demo
+            </p>
+          </div>
+          <p class="anim-up" style="font-family:'JetBrains Mono',monospace; font-size:calc(0.75rem * var(--scale)); color:var(--fg3); text-align:center;">
+            QR code will remain visible on following slides
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: AI-FIRST SOLUTION OVERVIEW -->
+  <div class="slide header-left" id="s4">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(2rem * var(--scale));">
+        <div class="h-label">The Solution</div>
+        <h2>AI-Powered Intelligence at Every Layer</h2>
+      </div>
+      <div class="kpi-grid anim-up" style="grid-template-columns:repeat(2, 1fr); gap:calc(2rem * var(--scale)); max-width:calc(1000px * var(--scale));">
+        <div class="kpi-card" style="align-items:flex-start; text-align:left;">
+          <div style="display:flex; align-items:center; gap:calc(0.8rem * var(--scale)); margin-bottom:calc(1rem * var(--scale)); width:100%;">
+            <i data-lucide="shield-check" style="width:calc(32px * var(--scale)); height:calc(32px * var(--scale)); color:var(--motion-red);"></i>
+            <div class="kpi-value" style="font-size:calc(1.5rem * var(--scale)); margin:0;">AI Review Moderation</div>
+          </div>
+          <div class="kpi-label" style="text-align:left;">Azure OpenAI gpt-5.4-mini pre-moderates every review </div>
+        </div>
+        <div class="kpi-card" style="align-items:flex-start; text-align:left;">
+          <div style="display:flex; align-items:center; gap:calc(0.8rem * var(--scale)); margin-bottom:calc(1rem * var(--scale)); width:100%;">
+            <i data-lucide="sparkles" style="width:calc(32px * var(--scale)); height:calc(32px * var(--scale)); color:var(--motion-red);"></i>
+            <div class="kpi-value" style="font-size:calc(1.5rem * var(--scale)); margin:0;">AI Recommendations</div>
+          </div>
+          <div class="kpi-label" style="text-align:left;">gpt-5.4 generates similar + complementary products<br> 3+3 suggestions tested and working</div>
+        </div>
+        <div class="kpi-card" style="align-items:flex-start; text-align:left;">
+          <div style="display:flex; align-items:center; gap:calc(0.8rem * var(--scale)); margin-bottom:calc(1rem * var(--scale)); width:100%;">
+            <i data-lucide="search" style="width:calc(32px * var(--scale)); height:calc(32px * var(--scale)); color:var(--motion-red);"></i>
+            <div class="kpi-value" style="font-size:calc(1.5rem * var(--scale)); margin:0;">Federated Search</div>
+          </div>
+          <div class="kpi-label" style="text-align:left;">Motion + Marketplace with AI query expansion & rerank<br> 95 results in ~100ms tested</div>
+        </div>
+        <div class="kpi-card" style="align-items:flex-start; text-align:left;">
+          <div style="display:flex; align-items:center; gap:calc(0.8rem * var(--scale)); margin-bottom:calc(1rem * var(--scale)); width:100%;">
+            <i data-lucide="activity" style="width:calc(32px * var(--scale)); height:calc(32px * var(--scale)); color:var(--motion-red);"></i>
+            <div class="kpi-value" style="font-size:calc(1.5rem * var(--scale)); margin:0;">Seller Monitoring</div>
+          </div>
+          <div class="kpi-label" style="text-align:left;">Real-time quality metrics auto-calculated </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: AI REVIEW MODERATION -->
+  <div class="slide header-left" id="s5">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(1.5rem * var(--scale));">
+        <div class="h-label">AI Feature #1</div>
+        <h2>AI Pre-Moderates Every Review (Before Humans See It)</h2>
+      </div>
+      <div class="two-col">
+        <div style="padding-bottom:calc(3rem * var(--scale));">
+          <div class="h-label" style="margin-bottom:calc(1rem * var(--scale));">How it works</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">Customer submits review → Azure OpenAI gpt-5.4-mini analyzes → Auto-approve or flag</p></div></li>
+            <li class="anim-up"><div><p class="item-title">SHA-256 blacklist cache (90-day TTL)</p><p class="item-text">Prevents resubmission of rejected content</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Rejection criteria: Profanity, spam, fake reviews, personal info, threats</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Structured JSON output</p><p class="item-text">approved, reason, flags, confidence (0-1)</p></div></li>
+          </ul>
+          <div class="h-label" style="margin:calc(2rem * var(--scale)) 0 calc(1rem * var(--scale)) 0;">Benefits</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">95%+ reviews auto-approved in &lt;2 seconds</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Manual review queue only for edge cases</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Content deduplication prevents repeat spam</p></div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="diagram-card anim-up" style="margin-bottom:calc(1.5rem * var(--scale));">
+            <img src="assets/diagrams/review-moderation.png" alt="AI review moderation flow: customer review to SHA-256 blacklist check to Azure OpenAI gpt-5.4-mini moderation to auto-approve, manual review queue, or reject">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: AI PRODUCT RECOMMENDATIONS -->
+  <div class="slide header-left" id="s6">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(1.5rem * var(--scale));">
+        <div class="h-label">AI Feature #2</div>
+        <h2>AI Generates Smart Product Suggestions</h2>
+      </div>
+      <div class="two-col">
+        <div style="padding-bottom:calc(2.5rem * var(--scale));">
+          <div class="h-label" style="margin-bottom:calc(1rem * var(--scale));">Similar Products</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">Based on category + manufacturer + price (±30%) + tags</p></div></li>
+            <li class="anim-up"><div><p class="item-text"> Test result: 3 results with scores 0.6-0.7</p></div></li>
+            <li class="anim-up"><div><p class="item-text">Reasons: SAME_CATEGORY, SAME_MANUFACTURER</p></div></li>
+          </ul>
+          <div class="h-label" style="margin:calc(2rem * var(--scale)) 0 calc(1rem * var(--scale)) 0;">Complementary Products</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">AI (gpt-5.4) dynamically generates compatible categories</p></div></li>
+            <li class="anim-up"><div><p class="item-text">Example: "hydraulic pump" → AI suggests ["seals", "lubricants", "hoses", "filters"]</p></div></li>
+            <li class="anim-up"><div><p class="item-text"> Test result: 3 results with AI scores up to 1.0</p></div></li>
+            <li class="anim-up"><div><p class="item-text">No hardcoded rules — AI learns product relationships</p></div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="diagram-card anim-up" style="margin-bottom:calc(1.5rem * var(--scale));">
+            <img src="assets/diagrams/recommendations.png" alt="AI product recommendations: source product fans into Similar (category, manufacturer, price, tags) and Complementary (gpt-5.4 maps compatible categories), merged and ranked into 3 plus 3 suggestions">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: FEDERATED SEARCH -->
+  <div class="slide header-left" id="s7">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(1.5rem * var(--scale));">
+        <div class="h-label">AI Feature #3</div>
+        <h2>One Search Bar, Two Catalogs<br/>Zero Friction</h2>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="h-label" style="margin-bottom:calc(1rem * var(--scale));">How it works</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">Parallel execution</p><p class="item-text">Motion ProductMatcher API + Elasticsearch marketplace (async)</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Intelligent merging</p><p class="item-text">Motion products prioritized while filling gaps with marketplace</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Multi-layer caching</p><p class="item-text">Redis (autocomplete) + Elasticsearch (search results)</p></div></li>
+            <li class="anim-up"><div><p class="item-title"> AI Query Expansion</p><p class="item-text">AI expands search terms for better results</p></div></li>
+            <li class="anim-up"><div><p class="item-title"> AI Rerank</p><p class="item-text">AI reorders results by relevance</p></div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="diagram-card anim-up" style="margin-bottom:calc(1.5rem * var(--scale)); margin-top: calc(-10rem * var(--scale))">
+            <img src="assets/diagrams/federated-search.png" alt="Federated search architecture: search query to AI query expansion to parallel Motion ProductMatcher API and Marketplace Elasticsearch, merged Motion-first then AI rerank, backed by Redis and Elasticsearch caches, returning 95 results in about 100ms">
+          </div>
+          <div class="h-label" style="margin:calc(-1rem * var(--scale)) 0 calc(-0.5rem * var(--scale)) 0;">Real Test Results</div>
+          <div class="kpi-grid anim-up columns-3" style="grid-template-columns:repeat(3, 1fr);">
+            <div class="kpi-card">
+              <div class="kpi-value">95</div>
+              <div class="kpi-label"> Results in ~100ms (87 Motion + 8 Marketplace)</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">89</div>
+              <div class="kpi-label"> Filters work: SKF filter returns 89 results</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-value">✓</div>
+              <div class="kpi-label"> Error handling: Non-existent products return empty arrays gracefully</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: SELLER QUALITY MONITORING -->
+  <div class="slide header-left" id="s8">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(1.5rem * var(--scale));">
+        <div class="h-label">AI Feature #4</div>
+        <h2>Automated Seller Metrics + Performance Tracking</h2>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="h-label" style="margin-bottom:calc(1rem * var(--scale));">Real-time calculation</div>
+          <ul class="bull-list">
+            <li class="anim-up"><div><p class="item-title">Rating, review count, response time, response rate</p><p class="item-text">Auto-updates on review changes — No manual recalculation needed</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Lifecycle: PENDING → KYC Verification → Manual Admin Approval → ACTIVE</p></div></li>
+            <li class="anim-up"><div><p class="item-title">Auto-flagging</p><p class="item-text">Low performers suspended (defect rate, shipping delays, disputes)</p></div></li>
+            <li class="anim-up"><div><p class="item-title">100% KYC verification before activation</p></div></li>
+          </ul>
+        </div>
+        <div>
+          <div class="diagram-card anim-up" style="margin-bottom:calc(1.5rem * var(--scale));">
+            <img src="assets/diagrams/seller-approval.png" alt="Seller approval and monitoring flow: seller applies (PENDING) to KYC verification to manual admin approval to ACTIVE, then auto-calculated metrics feed a quality threshold check that keeps the seller active or auto-suspends; failed KYC or rejected approval leads to Rejected">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: LIVE DEMO + Q&A INVITATION -->
+  <div class="slide header-left" id="s9">
+    <div class="slide-body">
+      <div class="slide-header" style="margin-bottom:calc(2rem * var(--scale));">
+        <div class="h-label">Demo</div>
+        <h2>See It In Action + Q&A</h2>
+      </div>
+      
+      <div class="two-col" style="align-items: center; margin-top: calc(0.5rem * var(--scale)); margin-bottom:calc(5rem * var(--scale));">
+        <!-- Column 1: QR Code -->
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+          <div class="anim-up" style="width:calc(380px * var(--scale)); height:calc(410px * var(--scale)); background:var(--bg3); border:calc(3px * var(--scale)) solid var(--border-red); border-radius:calc(20px * var(--scale)); padding:calc(2rem * var(--scale)); display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 calc(40px * var(--scale)) var(--red-glow);">
+            <img src="assets/qrcode.png" alt="QR Code" style="width:calc(300px * var(--scale)); height:calc(300px * var(--scale)); object-fit:contain; border-radius:8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <i data-lucide="qr-code" style="display:none; width:calc(250px * var(--scale)); height:calc(250px * var(--scale)); color:var(--motion-red);"></i>
+            <p style="margin-top: calc(1.5rem * var(--scale)); font-size:calc(1.2rem * var(--scale)); color:var(--fg); font-weight:600;">
+              Scan to try it yourself
+            </p>
+          </div>
+          <p class="anim-up" style="font-family:'JetBrains Mono',monospace; font-size:calc(0.95rem * var(--scale)); color:var(--fg2); margin-top:calc(2rem * var(--scale)); font-weight:500; opacity: 0.8;">
+            http://35.222.152.176:3000/
+          </p>
+        </div>
+
+        <!-- Column 2: Key Flows -->
+        <div class="anim-up">
+          <div class="h-label" style="margin-bottom:calc(2rem * var(--scale)); font-size:calc(0.9rem * var(--scale));">3 Key Flows to Try</div>
+          <ul class="bull-list">
+            <li>
+              <div>
+                <p class="item-title">Federated Search</p>
+                <p class="item-text">Search "hydraulic pump" to see Motion + Marketplace results merged with AI suggestions.</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <p class="item-title">AI Review Moderation</p>
+                <p class="item-text">Submit a review with profanity or spam and watch Azure OpenAI auto-reject it instantly.</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <p class="item-title">Seller Governance</p>
+                <p class="item-text">Access the Admin panel to approve new sellers and see performance metrics update in real-time.</p>
+              </div>
+            </li>
+          </ul>
+          
+          <div class="anim-up" style="margin-top:calc(3rem * var(--scale)); padding:calc(1.5rem * var(--scale)); background:var(--red-dim); border:calc(1px * var(--scale)) solid var(--border-red); border-radius:calc(12px * var(--scale));">
+            <p style="color:var(--motion-red); font-weight:600; font-size:calc(1.1rem * var(--scale)); display:flex; align-items:center; gap:0.5rem;">
+              <i data-lucide="message-square"></i> Questions & Answers
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: THANK YOU -->
+  <div class="slide" id="s10">
+    <div class="slide-body" style="align-items:center; justify-content:center; text-align:center;">
+      <div class="impact-number anim-up" style="margin-bottom:calc(2rem * var(--scale)); color:var(--motion-red);">Thank You!</div>
+      <p class="anim-up" style="font-family:'Space Grotesk',sans-serif; font-size:calc(2rem * var(--scale)); color:var(--fg); line-height:1.3; font-weight:600; margin-bottom:calc(1rem * var(--scale));">
+        Team Alpaca
+      </p>
+      <p class="anim-up" style="font-family:'Inter',sans-serif; font-size:calc(1.2rem * var(--scale)); color:var(--fg2); line-height:1.5; max-width:50ch; margin-bottom:calc(3rem * var(--scale)); font-weight:400;">
+        AI-Powered Industrial Platform — Built and Tested
+      </p>
+      <div class="kpi-grid anim-up" style="max-width:900px; margin:0 auto;">
+        <div class="kpi-card">
+          <div class="kpi-value">v1.0.0</div>
+          <div class="kpi-label">Live and Running </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">gpt-5.4</div>
+          <div class="kpi-label">AI Models Tested </div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">4</div>
+          <div class="kpi-label">AI Features Deployed </div>
+        </div>
+      </div>
+      <div style="position:absolute; bottom:calc(2rem * var(--scale)); left:50%; transform:translateX(-50%); opacity:0.3; font-size:calc(1.5rem * var(--scale));">
+        🦙
+      </div>
+    </div>
+    <div class="qr-persistent">
+      <img src="assets/qrcode.png" alt="QR Code" style="width:100%; height:100%; object-fit:contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <i data-lucide="qr-code" style="display:none; width:100%; height:100%; color:var(--fg3);"></i>
+    </div>
+  </div>
+
+</div>
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">←</button>
+  <div id="dots" style="display:flex; gap:calc(0.6rem * var(--scale));"></div>
+  <span id="nav-counter">01 / 10</span>
+  <button class="nav-btn" id="btn-next">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('nav-counter');
+  const progress = document.getElementById('progress');
+  const slideLabel = document.getElementById('slide-label');
+  const total = 10;
+  let current = 0;
+
+  const labels = [
+    'Project Announcement',      // Slide 1
+    'Meet the Team',              // Slide 2
+    'Strategic Value',            // Slide 3
+    'AI-First Solution',          // Slide 4
+    'AI Review Moderation',       // Slide 5
+    'AI Recommendations',         // Slide 6
+    'Federated Search',           // Slide 7
+    'Seller Monitoring',          // Slide 8
+    'Live Demo',                  // Slide 9
+    'Thank You'                   // Slide 10
+  ];
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    slideLabel.textContent = labels[current];
+  }
+
+  document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  });
+
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+
+  themeToggle.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    const icon = themeToggle.querySelector('i');
+    icon.setAttribute('data-lucide', next === 'dark' ? 'sun' : 'moon');
+    lucide.createIcons();
+  });
+
+  progress.style.width = (1 / total * 100) + '%';
+  lucide.createIcons();
+</script>
+</body>
+</html>
